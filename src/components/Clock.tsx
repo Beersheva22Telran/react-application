@@ -1,4 +1,4 @@
-import { CSSProperties} from "react";
+import { CSSProperties, useMemo} from "react";
 import timeZones from '../time-zones';
 type Props = {
     time: Date,
@@ -12,7 +12,7 @@ function getTimeZone(cityCountry: string): string|undefined {
      return timeZoneObj?.name;
 }
 export const Clock: React.FC<Props> = ({time, cityCountry}) => {
-    const timeZone: string|undefined = getTimeZone(cityCountry);
+    const timeZone: string|undefined = useMemo(() => getTimeZone(cityCountry),[cityCountry]);
     const title: string = (timeZone && cityCountry) || 'Israel';
    const timeStr: string = time.toLocaleTimeString(undefined,
      {timeZone}) 
