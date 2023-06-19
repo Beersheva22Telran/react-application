@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import InputResult from "../../model/InputResult";
 import Alert from "./Alert";
 import { StatusType } from "../../model/StatusType";
-
+import "./Input.css"
 type Props = {
     submitFn: (inputText: string) => InputResult;
     placeholder: string;
@@ -18,6 +18,9 @@ const Input: React.FC<Props> = ({submitFn, placeholder, buttonTitle, type}) => {
     function onClickFn(){
         const res = submitFn(inputElementRef.current!.value);
         status.current = res.status;
+        if(res.status === "success") {
+            inputElementRef.current!.value = ''
+        }
         setMessage(res.message || '');
         res.message && setTimeout(() => setMessage(''), 5000);
     }
@@ -27,7 +30,7 @@ const Input: React.FC<Props> = ({submitFn, placeholder, buttonTitle, type}) => {
     return <div>
         <input type={type || 'text'} placeholder={placeholder} ref={inputElementRef}
         onChange={onChangeFn}/>
-        <button onClick={onClickFn} disabled={disabled}>{buttonTitle || 'GO' }</button>
+        <button  onClick={onClickFn} disabled={disabled}>{buttonTitle || 'GO' }</button>
         {message && <Alert status={status.current} message={message}></Alert>}
     </div>
 }
