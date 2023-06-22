@@ -1,16 +1,21 @@
 import { useEffect } from "react";
 import LifeGame from "./components/LifeGame";
 import { useDispatch } from "react-redux";
-import { getSize, sizeActions } from "./redux/slices/cellSizeSlice";
+import { sizeActions } from "./redux/slices/cellSizeSlice";
+import { directionActions } from "./redux/slices/flexDirectionSlice";
+import Lifes from "./components/Lifes";
 
 
- const App: React.FC = () => {
+const App: React.FC = () => {
   const dispatch = useDispatch<any>();
   useEffect(() => {
-    window.addEventListener('resize', () =>
-     dispatch(sizeActions.setSize(getSize())))
-  })
-  return <div><LifeGame /> 
-    </div>
+    window.addEventListener('resize', () => {
+      dispatch(sizeActions.setSize());
+      dispatch(directionActions.setDirection())
+    });
+
+  }, []);
+  return <div><Lifes />
+  </div>
 }
 export default App;

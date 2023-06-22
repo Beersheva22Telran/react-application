@@ -1,7 +1,7 @@
 import {createSlice} from '@reduxjs/toolkit'
-import {dimension} from '../../config/life-game-config.json'
-
-export function getSize() {
+import lifeConfig from '../../config/life-game-config.json'
+const {dimension} = lifeConfig;
+ function getSize() {
     return Math.min(window.innerHeight, window.innerWidth) / dimension - 2
 }
 const initialState: {size: number} = {
@@ -11,8 +11,8 @@ const slice = createSlice({
     initialState,
     name: 'sizeState',
     reducers: {
-        setSize: (state, data) => {
-            state.size = data.payload as number;
+        setSize: (state) => {
+            state.size = getSize();
         }
 
     }
