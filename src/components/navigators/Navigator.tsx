@@ -1,16 +1,15 @@
-import {NavLink, Outlet} from 'react-router-dom'
-const Navigator: React.FC = () => {
+import { NavLink, Outlet} from 'react-router-dom'
+export type RouteType = {
+    to: string, label: string
+}
+const Navigator: React.FC<{ routes: RouteType[] }> = ({routes}) => {
+    
     return <div >
         <nav>
             <ul className="navigator-list">
-                <li className="navigator-item">
-                    <NavLink to="/signin" >Sign In</NavLink>
-
-                </li>
-                <li className="navigator-item">
-                    <NavLink to="/signout" >Sign Out</NavLink>
-
-                </li>
+                {routes.map(r => <li key={r.label} className="navigator-item">
+                        <NavLink to={r.to}>{r.label}</NavLink>
+                </li>)}
             </ul>
         </nav>
         <Outlet></Outlet>
