@@ -17,7 +17,7 @@ function getRoutes(username: string): RouteType[] {
   res.push(...always);
   username && res.push(...authenticated);
   username.startsWith('admin') && res.push(...admin);
- !!username && !username.startsWith('admin') && res.push(...noadmin);
+ username && !username.startsWith('admin') && res.push(...noadmin);
   !username && res.push(...noauthenticated);
   return res;
 }

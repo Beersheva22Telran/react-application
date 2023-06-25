@@ -1,6 +1,7 @@
 import {createSlice} from '@reduxjs/toolkit';
+const AUTH_ITEM = "auth-item";
 const initialState: {username: string} = {
-username: ''
+username: localStorage.getItem(AUTH_ITEM) || ''
 }
 const authSlice = createSlice({
     initialState,
@@ -8,9 +9,11 @@ const authSlice = createSlice({
     reducers: {
         set: (state, data) => {
             state.username = data.payload;
+            localStorage.setItem(AUTH_ITEM, data.payload);
         },
         reset: (state) => {
-            state.username = ''
+            state.username = '';
+            localStorage.removeItem(AUTH_ITEM);
         }
 
     }
