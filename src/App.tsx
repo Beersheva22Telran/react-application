@@ -11,6 +11,7 @@ import './App.css'
 import { useSelectorAuth } from "./redux/store";
 import { useMemo } from "react";
 import routesConfig from './config/routes-config.json';
+import NotFound from "./components/pages/NotFound";
 const {always, authenticated, admin, noadmin, noauthenticated} = routesConfig;
 function getRoutes(username: string): RouteType[] {
   const res: RouteType[] = [];
@@ -30,10 +31,12 @@ const App: React.FC = () => {
         <Route index element={<Home/>}/>
         <Route path="customers" element={<Customers/>}/>
         <Route path="products" element={<Products/>}/>
-        <Route path="orders" element={<Orders/>}/>
+        <Route path="orders" 
+        element={<Orders/>}/>
         <Route path="shoppingcart" element={<ShoppingCart/>}/>
         <Route path="signin" element={<SignIn/>}/>
         <Route path="signout" element={<SignOut/>}/>
+        <Route path="/*" element={<NotFound/>}/>
     </Route>
   </Routes>
   </BrowserRouter>
