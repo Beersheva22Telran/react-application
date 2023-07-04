@@ -4,7 +4,7 @@ import NavigatorDispatcher from "./components/navigators/NavigatorDispatcher";
 import SignIn from "./components/pages/SignIn";
 import SignOut from "./components/pages/SignOut";
 import './App.css'
-import { useSelectorAuth } from "./redux/store";
+import { useSelectorAuth, useSelectorCode } from "./redux/store";
 import { useMemo } from "react";
 import routesConfig from './config/routes-config.json';
 import NotFound from "./components/pages/NotFound";
@@ -43,6 +43,9 @@ function getRoutes(userData: UserData): RouteType[] {
 }
 const App: React.FC = () => {
   const userData = useSelectorAuth();
+  const code = useSelectorCode();
+
+  const [alertMessage, severity] = useMemo(() => codeProcessing(), [code]);
   const routes = useMemo(() => getRoutes(userData), [userData])
   return <BrowserRouter>
   <Routes>

@@ -6,6 +6,9 @@ import EmployeesService from "./EmployeesService";
 export default class EmployeesServiceRest implements EmployeesService {
 
     constructor(private url: string) { }
+    deleteEmployee(id: any): Promise<void> {
+        throw new Error("Method not implemented.");
+    }
     getEmployees(): Observable<Employee[] | string> {
        const res =  new Observable<Employee[] | string>((subscriber) => {
             fetch(this.url, {
