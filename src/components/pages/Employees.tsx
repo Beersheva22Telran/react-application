@@ -16,7 +16,33 @@ import { Confirmation } from "../common/Confirmation";
 import { CSSProperties } from "@mui/material/styles/createMixins";
 import { EmployeeForm } from "../forms/EmployeeForm";
 import InputResult from "../../model/InputResult";
-
+const columnsCommon: GridColDef[] = [
+    {
+        field: 'id', headerName: 'ID', flex: 0.5, headerClassName: 'data-grid-header',
+        align: 'center', headerAlign: 'center'
+    },
+    {
+        field: 'name', headerName: 'Name', flex: 0.7, headerClassName: 'data-grid-header',
+        align: 'center', headerAlign: 'center'
+    },
+    {
+        field: 'birthDate', headerName: "Date", flex: 0.8, type: 'date', headerClassName: 'data-grid-header',
+        align: 'center', headerAlign: 'center'
+    },
+    {
+        field: 'department', headerName: 'Department', flex: 0.8, headerClassName: 'data-grid-header',
+        align: 'center', headerAlign: 'center'
+    },
+    {
+        field: 'salary', headerName: 'Salary', type: 'number', flex: 0.6, headerClassName: 'data-grid-header',
+        align: 'center', headerAlign: 'center'
+    },
+    {
+        field: 'gender', headerName: 'Gender', flex: 0.6, headerClassName: 'data-grid-header',
+        align: 'center', headerAlign: 'center'
+    },
+   ];
+   
 const style = {
     position: 'absolute' as 'absolute',
     top: '50%',
@@ -30,6 +56,28 @@ const style = {
 };
 
 const Employees: React.FC = () => {
+    const columnsAdmin: GridColDef[] = [
+        {
+            field: 'actions', type: "actions", getActions: (params) => {
+                return [
+                    <GridActionsCellItem label="remove" icon={<Delete />}
+                        onClick={() => removeEmployee(params.id)
+                        } />,
+                    <GridActionsCellItem label="update" icon={<Edit />}
+                        onClick={() => {
+                            employeeId.current = params.id as any;
+                            if (params.row) {
+                                const empl = params.row;
+                                empl && (employee.current = empl);
+                                setFlEdit(true)
+                            }
+    
+                        }
+                        } />
+                ] ;
+            }
+        }
+       ]
     const dispatch = useDispatch();
     const userData = useSelectorAuth();
     const [employees, setEmployees] = useState<Employee[]>([]);
@@ -70,52 +118,11 @@ const Employees: React.FC = () => {
         return () => subscription.unsubscribe();
     }, []);
     function getColumns(): GridColDef[] {
-        const columns: GridColDef[] = [
-            {
-                field: 'id', headerName: 'ID', flex: 0.5, headerClassName: 'data-grid-header',
-                align: 'center', headerAlign: 'center'
-            },
-            {
-                field: 'name', headerName: 'Name', flex: 0.7, headerClassName: 'data-grid-header',
-                align: 'center', headerAlign: 'center'
-            },
-            {
-                field: 'birthDate', headerName: "Date", flex: 0.8, type: 'date', headerClassName: 'data-grid-header',
-                align: 'center', headerAlign: 'center'
-            },
-            {
-                field: 'department', headerName: 'Department', flex: 0.8, headerClassName: 'data-grid-header',
-                align: 'center', headerAlign: 'center'
-            },
-            {
-                field: 'salary', headerName: 'Salary', type: 'number', flex: 0.6, headerClassName: 'data-grid-header',
-                align: 'center', headerAlign: 'center'
-            },
-            {
-                field: 'gender', headerName: 'Gender', flex: 0.6, headerClassName: 'data-grid-header',
-                align: 'center', headerAlign: 'center'
-            },
-            {
-                field: 'actions', type: "actions", getActions: (params) => {
-                    return userData && userData.role == 'admin' ? [
-                        <GridActionsCellItem label="remove" icon={<Delete />}
-                            onClick={() => removeEmployee(params.id)
-                            } />,
-                        <GridActionsCellItem label="update" icon={<Edit />}
-                            onClick={() => {
-                                employeeId.current = params.id as any;
-                                if(params.id) {
-                                    const empl = employees.find(e => e.id == params.id);
-                                    empl && (employee.current = empl);
-                                    setFlEdit(true)
-                                }
-                                
-                            }
-                            } />
-                    ] : [];
-                }
-            }];
-        return columns;
+        let res: GridColDef[] = columnsCommon;
+        if (userData && userData.role == 'admin') {
+            res = res.concat(columnsAdmin);
+        }
+        return res;
     }
     function removeEmployee(id: any) {
         title.current = "Remove Employee object?";
@@ -147,17 +154,15 @@ const Employees: React.FC = () => {
         dispatch(codeActions.set({ code, message }))
         setOpenConfirm(false);
     }
-     function updateEmployee(empl: Employee): Promise<InputResult>{
+    function updateEmployee(empl: Employee): Promise<InputResult> {
         setFlEdit(false)
-        const res: InputResult = {status: 'error', message: ''};
+        const res: InputResult = { status: 'error', message: '' };
         if (JSON.stringify(employee.current) != JSON.stringify(empl)) {
             title.current = "Update Employee object?";
             employee.current = empl;
-        
-        content.current = `You are going update employee with id ${empl.id}`;
-        
-        confirmFn.current = actualUpdate;
-        setOpenConfirm(true);
+            content.current = `You are going update employee with id ${empl.id}`;
+            confirmFn.current = actualUpdate;
+            setOpenConfirm(true);
         }
         return Promise.resolve(res);
     }
@@ -184,7 +189,7 @@ const Employees: React.FC = () => {
         setOpenConfirm(false);
 
     }
-    
+
     return <Box sx={{
         display: 'flex', justifyContent: 'center',
         alignContent: 'center'
@@ -201,7 +206,7 @@ const Employees: React.FC = () => {
             aria-describedby="modal-modal-description"
         >
             <Box sx={style}>
-               <EmployeeForm submitFn={updateEmployee} employeeUpdated={employee.current} />
+                <EmployeeForm submitFn={updateEmployee} employeeUpdated={employee.current} />
             </Box>
         </Modal>
 

@@ -2,9 +2,29 @@ import { Observable } from "rxjs";
 import Employee from "../model/Employee";
 import { AUTH_DATA_JWT } from "./AuthServiceJwt";
 import EmployeesService from "./EmployeesService";
+const POLLER_INTERVAL = 2000;
+class Cache {
+    cacheString: string = '';
+    set(employees: Employee[]): void {
+        this.cacheString = JSON.stringify(employees);
+    }
+    reset() {
+        this.cacheString = ''
+    }
+    isEqual(employees: Employee[]): boolean {
+        return this.cacheString === JSON.stringify(employees)
+    }
+    getCache(): Employee[] {
+        return !this.isEmpty() ? JSON.parse(this.cacheString) : []
+    }
+    isEmpty(): boolean {
+        return this.cacheString.length === 0;
+    }
+}
 
 export default class EmployeesServiceRest implements EmployeesService {
-
+    private observable: Observable<Employee[] | string> | null = null;
+    private cache: Cache = new Cache();
     constructor(private url: string) { }
     async updateEmployee(empl: Employee): Promise<Employee> {
         let responseText = '';
@@ -102,7 +122,8 @@ export default class EmployeesServiceRest implements EmployeesService {
                 return res;
                 
             })
-            .then((data) => subscriber.next(data)).catch(error => subscriber.next('Server is unavailable, repeate later on'));
+            .then((data) => subscriber.next(data))
+            .catch(error => subscriber.next('Server is unavailable, repeate later on'));
             
 
         } );
