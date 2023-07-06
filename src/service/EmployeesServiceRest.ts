@@ -6,8 +6,82 @@ import EmployeesService from "./EmployeesService";
 export default class EmployeesServiceRest implements EmployeesService {
 
     constructor(private url: string) { }
-    deleteEmployee(id: any): Promise<void> {
-        throw new Error("Method not implemented.");
+    async updateEmployee(empl: Employee): Promise<Employee> {
+        let responseText = '';
+        let flUpdate = false;
+        try {
+            await this.getEmployee(empl.id);
+            flUpdate = true;
+            const response = await fetch(`${this.url}/${empl.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem(AUTH_DATA_JWT) || ''}`
+                },
+                body: JSON.stringify(empl)
+                
+            });
+            if (!response.ok) {
+                const { status, statusText } = response;
+                responseText = status == 401 || status == 403 ? 'Authentication' : statusText;
+                throw responseText;
+            }
+            return await response.json();
+        } catch (error: any) {
+            if (!flUpdate) {
+                throw error;
+            }
+            throw responseText ? responseText : "Server is unavailable. Repeat later on";
+        }
+    }
+    async getEmployee(id: any): Promise<Employee> {
+        let responseText = '';
+        try {
+            const response = await fetch(`${this.url}/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem(AUTH_DATA_JWT) || ''}`
+                },
+                
+            });
+            if (!response.ok) {
+                const { status, statusText } = response;
+                responseText = status == 401 || status == 403 ? 'Authentication' : statusText;
+                throw responseText;
+            }
+            return await response.json();
+        } catch (error: any) {
+
+            throw responseText ? responseText : "Server is unavailable. Repeat later on";
+        }
+    }
+    async deleteEmployee(id: any): Promise<void> {
+        let responseText = '';
+        let flDelete = false;
+        try {
+            await this.getEmployee(id);
+            flDelete = true;
+            const response = await fetch(`${this.url}/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem(AUTH_DATA_JWT) || ''}`
+                },
+                
+            });
+            if (!response.ok) {
+                const { status, statusText } = response;
+                responseText = status == 401 || status == 403 ? 'Authentication' : statusText;
+                throw responseText;
+            }
+            return await response.json();
+        } catch (error: any) {
+            if(!flDelete) {
+                throw error;
+            }
+            throw responseText ? responseText : "Server is unavailable. Repeat later on";
+        }
     }
     getEmployees(): Observable<Employee[] | string> {
        const res =  new Observable<Employee[] | string>((subscriber) => {
