@@ -10,6 +10,7 @@ export function count(array, field, interval) {
          return res;
     }, {});
 }
+
 export function arraySum(array) {
     return array.reduce((sum, cur) => sum + cur, 0);
 }
