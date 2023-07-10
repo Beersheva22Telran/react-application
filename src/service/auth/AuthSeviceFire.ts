@@ -2,7 +2,7 @@ import LoginData from "../../model/LoginData";
 import UserData from "../../model/UserData";
 import AuthService from "./AuthService";
 import {getFirestore, collection, getDoc, doc} from "firebase/firestore";
-import {getAuth, signInWithEmailAndPassword, signOut} from "firebase/auth";
+import {GoogleAuthProvider, getAuth, signInWithEmailAndPassword, signInWithPopup, signOut} from "firebase/auth";
 import appFirebase from "../../config/firebase-config";
 
 export default class AuthServiceFire implements AuthService {
@@ -15,10 +15,12 @@ export default class AuthServiceFire implements AuthService {
     async login(loginData: LoginData): Promise<UserData> {
         let userData: UserData = null;
         try {
-            const userAuth = await signInWithEmailAndPassword(this.auth, loginData.email,
+            const userAuth = loginData.email==="GOOGLE" ?
+             await signInWithPopup(this.auth, new GoogleAuthProvider()) :
+            await signInWithEmailAndPassword(this.auth, loginData.email,
                  loginData.password);
-            userData = {email: loginData.email,
-                 role: !await this.isAdmin(userAuth.user.uid) ? 'admin' : 'user'}     
+            userData = {email: userAuth.user.email as string,
+                 role: await this.isAdmin(userAuth.user.uid) ? 'admin' : 'user'}     
                 
         } catch (error: any) {
             console.log(error.code, error)
