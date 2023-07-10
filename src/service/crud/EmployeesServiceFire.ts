@@ -1,12 +1,12 @@
-import { Observable } from "rxjs";
-import Employee from "../model/Employee";
+import { Observable, catchError, of } from "rxjs";
+import Employee from "../../model/Employee";
 import EmployeesService from "./EmployeesService";
-import appFirebase from '../config/firebase-config';
+import appFirebase from '../../config/firebase-config';
 import {CollectionReference, DocumentReference, getFirestore,
      collection, getDoc,FirestoreError, setDoc, deleteDoc, doc} from 'firebase/firestore';
 import {collectionData} from 'rxfire/firestore'   
-import { getRandomInt } from "../util/random";
-import { getISODateStr } from "../util/date-functions";
+import { getRandomInt } from "../../util/random";
+import { getISODateStr } from "../../util/date-functions";
 const MIN_ID = 100000;
 const MAX_ID = 1000000;
 function convertEmployee(empl: Employee, id?: string): any {
@@ -56,7 +56,12 @@ export default class EmployeesServiceFire implements EmployeesService {
         return id;
     }
     getEmployees(): Observable<string | Employee[]> {
-        return collectionData(this.collectionRef) as Observable<string | Employee[]>;
+        return collectionData(this.collectionRef).pipe(catchError(error => {
+            const firestorError: FirestoreError = error;
+            const errorMessage = getErrorMessage(firestorError);
+            return of(errorMessage)
+        })) as Observable<string | Employee[]>
+        
     }
     async deleteEmployee(id: any): Promise<void> {
         const docRef = this.getDocRef(id);
