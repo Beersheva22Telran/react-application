@@ -23,7 +23,9 @@ const SignIn: React.FC = () => {
         }
         return inputResult;
     }
-    return <SignInForm submitFn={submitFn}/>
+    return <SignInForm submitFn={submitFn}
+     networks={authService.getAvailableProvider()}
+         />
 
 }
 
