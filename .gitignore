@@ -23,6 +23,5 @@ yarn-debug.log*
 yarn-error.log*
 firebase-config.ts
 .firebaserc
-.gitignore
 firebase.json
 .firebase/hosting.YnVpbGQ.cache
