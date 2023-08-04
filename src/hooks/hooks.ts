@@ -1,18 +1,17 @@
 import { useDispatch } from "react-redux";
-import CodePayload from "../model/CodePayload";
 import CodeType from "../model/CodeType";
 import { codeActions } from "../redux/slices/codeSlice";
 import { useEffect, useState } from "react";
-import Employee from "../model/Employee";
 import { Subscription } from "rxjs";
-import { employeesService } from "../config/service-config";
+import { advertsService } from "../config/service-config";
+import Advert from "../model/Advert";
 
 export function useDispatchCode() {
     const dispatch = useDispatch();
     return (error: string, successMessage: string) => {
         let code: CodeType = CodeType.OK;
         let message: string = '';
-        
+
         if (error.includes('Authentication')) {
 
             code = CodeType.AUTH_ERROR;
@@ -25,19 +24,19 @@ export function useDispatchCode() {
         dispatch(codeActions.set({ code, message: message || successMessage }))
     }
 }
-export function useSelectorEmployees() {
+export function useSelectorAdverts() {
     const dispatch = useDispatchCode();
-    const [employees, setEmployees] = useState<Employee[]>([]);
+    const [adverts, setAdverts] = useState<Advert[]>([]);
     useEffect(() => {
 
-        const subscription: Subscription = employeesService.getEmployees()
+        const subscription: Subscription = advertsService.getAdverts()
             .subscribe({
-                next(emplArray: Employee[] | string) {
+                next(adsArray: Advert[] | string) {
                     let errorMessage: string = '';
-                    if (typeof emplArray === 'string') {
-                        errorMessage = emplArray;
+                    if (typeof adsArray === 'string') {
+                        errorMessage = adsArray;
                     } else {
-                        setEmployees(emplArray.map(e => ({ ...e, birthDate: new Date(e.birthDate) })));
+                        setAdverts(adsArray);
                     }
                     dispatch(errorMessage, '');
 
@@ -45,6 +44,6 @@ export function useSelectorEmployees() {
             });
         return () => subscription.unsubscribe();
     }, []);
-    return employees;
+    return adverts;
 }
 
