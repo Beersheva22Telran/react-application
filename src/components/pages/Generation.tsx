@@ -4,10 +4,10 @@ import Input from "../common/Input"
 import { advertsService } from "../../config/service-config";
 
 import CodeType from "../../model/CodeType";
-import { getRandomAdvert, getRandomEmployee } from "../../util/random";
 import { codeActions } from "../../redux/slices/codeSlice";
 import Advert from "../../model/Advert";
-const MAX_AMOUNT = 20;
+import { getRandomAdvert } from "../../util/randomAdvert";
+const MAX_AMOUNT = 500;
 const Generation: React.FC = () => {
     const dispatch = useDispatch();
     function onSubmit(value: string): InputResult {
@@ -49,10 +49,12 @@ const Generation: React.FC = () => {
 
 
         }
-        message = `added ${count} employees ` + message;
+        message = `added ${count} adverts ` + message;
         dispatch(codeActions.set({ code, message }))
     }
     return <Input submitFn={onSubmit}
-        placeholder={`amount of random Employees [1 - ${MAX_AMOUNT}]`} type="number" buttonTitle="Generate" />
+        placeholder={`amount of random adverts [1 - ${MAX_AMOUNT}]`} type="number" buttonTitle="Generate" />
 }
 export default Generation;
+
+

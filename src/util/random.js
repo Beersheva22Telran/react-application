@@ -38,19 +38,7 @@ export function getRandomDate(minYear, maxYear) {
     const day = getRandomInt(1, 32);
     return new Date(year, month, day);
 }
-export function getRandomAdvert() {
-    const categories = [
-        {category: "category1",properties: 3},
-        {category: "category2",properties: 2},
-        {category: "category3",properties: 4},
-        {category: "category4",properties: 5}
-    ]
-    const index = getRandomInt(0, categories.length);
-    const category = categories[index].category;
-    const name = "name" + getRandomInt(1, 10000000);
-    const price = getRandomInt(100, 1000000);
-    return {name, category, price, ...getRandomProps(categories[index].properties)}
-}
+
 function getRandomProps(nProperties) {
     return Array.from({length: nProperties}).map(getPropValue)
     .reduce((res, cur, index) => ({...res,["prop" + index]: cur}),{})

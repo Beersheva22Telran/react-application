@@ -41,6 +41,10 @@ const Adverts: React.FC = () => {
             align: 'center', headerAlign: 'center'
         },
         {
+            field: 'price', headerName: "Price", flex: 0.8,  headerClassName: 'data-grid-header',
+            align: 'center', headerAlign: 'center'
+        },
+        {
             field: 'actions', type: "actions", getActions: (params) => {
                 return [
                     <GridActionsCellItem label="remove" icon={<Delete />}
