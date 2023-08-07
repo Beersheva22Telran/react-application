@@ -8,6 +8,7 @@ const NewAdd: React.FC = () => {
     const submitFn = async (advert: Advert) => {
         await advertsService.addAdvert(advert);
     }
+    
     return <AdvertForm submitFn={submitFn}/>
 }
 
