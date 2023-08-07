@@ -15,6 +15,7 @@ import { Alert, Snackbar } from "@mui/material";
 import { codeActions } from "./redux/slices/codeSlice";
 import Generation from "./components/pages/Generation";
 import process from "process";
+import NewAd from "./components/pages/NewAd";
 const { always } = routesConfig;
 type RouteTypeOrder = RouteType & { order?: number }
 function getRoutes(): RouteType[] {
@@ -57,7 +58,7 @@ const App: React.FC = () => {
     <Routes>
       <Route path="/" element={<NavigatorDispatcher routes={routes} />}>
         <Route index element={<Adverts />} />
-       
+        <Route path="advert/new" element={<NewAd />} />
         <Route path="generation" element={<Generation />} />
         <Route path="/*" element={<NotFound />} />
       </Route>

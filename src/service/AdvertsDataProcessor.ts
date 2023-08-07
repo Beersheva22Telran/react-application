@@ -25,7 +25,8 @@ export default class AdvertsDataProcessor implements AdvertsService {
         return this.advertsService.deleteAdvert(id);
     }
     updateAdvert(ad: any): Promise<void> {
-        return this.advertsService.updateAdvert(propertiesToJson)
+        ad = propertiesToJson(ad);
+        return this.advertsService.updateAdvert(ad)
     }
     getAdvert(id: any): Promise<Advert|undefined> {
         let res = this.advertsService.getAdvert(id);

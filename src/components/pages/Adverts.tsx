@@ -14,17 +14,6 @@ import AdvertForm from "../forms/AdvertForm";
 
 
 
-const style = {
-    position: 'absolute' as 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-};
 
 const Adverts: React.FC = () => {
     const columnsCommon: GridColDef[] = [
@@ -85,6 +74,18 @@ const Adverts: React.FC = () => {
     const [openConfirm, setOpenConfirm] = useState(false);
     const [openEdit, setFlEdit] = useState(false);
     const [openDetails, setFlDetails] = useState(false);
+    const style = {
+        position: 'absolute' as 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: openEdit ? 800 : 400,
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+    };
+    
     const title = useRef('');
     const content = useRef('');
     const adId = useRef('');
@@ -117,7 +118,7 @@ const Adverts: React.FC = () => {
         dispatch(errorMessage, '');
         setOpenConfirm(false);
     }
-    function updateAdvert(ad: Advert): Promise<InputResult> {
+    function updateAdvert(ad: Advert): Promise<void> {
         setFlEdit(false)
         const res: InputResult = { status: 'error', message: '' };
         if (JSON.stringify(advert.current) != JSON.stringify(ad)) {
@@ -127,7 +128,7 @@ const Adverts: React.FC = () => {
             confirmFn.current = actualUpdate;
             setOpenConfirm(true);
         }
-        return Promise.resolve(res);
+        return Promise.resolve();
     }
     async function actualUpdate(isOk: boolean) {
 
@@ -162,7 +163,7 @@ const Adverts: React.FC = () => {
             aria-describedby="modal-modal-description"
         >
             <Box sx={style}>
-                <AdvertForm submitFn={updateAdvert}  />
+                <AdvertForm submitFn={updateAdvert} advertUpdate={advert.current} />
             </Box>
         </Modal>
         <Modal

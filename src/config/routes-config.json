@@ -1,5 +1,6 @@
 {
-    "always": [{"to":"/", "label":" Adverts"}],
+    "always": [{"to":"/", "label":" Adverts"},
+    {"to":"/advert/new", "label":" New Advert"} ],
     
      "developmentAdmin": [{"to": "/generation", "label": "Generate Adverts", "order":20}]
 }

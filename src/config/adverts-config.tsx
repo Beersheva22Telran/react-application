@@ -1,7 +1,35 @@
+import { ReactNode } from "react";
 import Advert from "../model/Advert";
 import { getRandomApplience, getRandomCar, getRandomRealty } from "../util/randomAdvert";
+import CarsForm from "../components/forms/CarsForm";
+import { Typography } from "@mui/material";
 
 export type Category = "Realty" | "Cars" | "Appliances"
+export type CommonProperties = {
+    category: string;
+    name: string;
+    price: number;
+}
+export type Realty = CommonProperties & {
+    rentSale?: "rent" | "sale";
+    size?: number;
+    rooms?: number;
+    type?: "Apartment"| "Cottage"| "Villa"
+}
+export type Car = CommonProperties &{
+    company?: string;
+    model?: string; 
+    year?: number;
+    kilometers?: number;
+    color?: string
+}
+export type Appliance = CommonProperties & {
+    type?: "TV Set"| "Fridge"| "Computer"| "Smartphone"|
+    "Drone"| "Amplifier",
+    rentSale?: "rent"|"sale",
+    size?: number,
+    rooms?: number
+}
 export const categories: Map<Category, any> = new Map([
     ["Realty", {
         price: { sale: {min: 900000, max: 10000000}, rent: {min: 3500, max: 10000} },
@@ -24,7 +52,8 @@ export const categories: Map<Category, any> = new Map([
     "MX-5", "MX-30"],Hundai: ["i10", "i20", "i30", "Tucson",
      "Elantra", "Kona", "Accent", "Ioniq"], Kia: ["Sportage",
       "Sorento", "Forte", "Sorento", "Rio", "Carnival","Picanto", "Stonic"] },
-      year: {min: 2000, max: 2023},color: ["blue", "green", "red",
+      year: {min: 2000, max: 2023},
+      color: ["blue", "green", "red",
        "silver", "black", "white", "gray", "pearl", "metalic"], 
        kilometers: {min: 0, max: 50000}
        
@@ -48,3 +77,18 @@ export const generationFunctions: Map<Category, ()=>Advert> = new Map(
 
     ]
 )
+
+ export function getCategoryForms(advert: Advert,
+     submitFn: (advert: Advert)=>Promise<void>) :  Map<Category, ReactNode> {
+        const categoryForms: Map<Category, ReactNode> =new Map<Category, ReactNode> (
+            [
+                ["Cars", <CarsForm advert={advert}
+                 submitFn={submitFn}
+                 ></CarsForm>],
+                 ["Realty",<Typography variant={"h4"}>Not Implemented yet</Typography>],
+                 ["Appliances",<Typography variant={"h4"}>Not Implemented yet</Typography>]
+            ])
+            return categoryForms;
+     }
+ 
+
