@@ -21,11 +21,11 @@ class Cache {
         return this.cacheString.length === 0;
     }
 }
-function getResponseText(response: Response): string {
+async function getResponseText(response: Response): Promise<string> {
     let res = '';
     if (!response.ok) {
-        const { status, statusText } = response;
-        res = status == 401 || status == 403 ? 'Authentication' : statusText;
+        const { status } = response;
+        res = status == 401 || status == 403 ? 'Authentication' : await response.text();
     }
     return res;
 
@@ -53,7 +53,7 @@ async function fetchRequest(url: string, options: RequestInit, empl?: Employee):
         }
 
         const response = await fetch(url, options);
-        responseText = getResponseText(response);
+        responseText = await getResponseText(response);
         if (responseText) {
             throw responseText;
         }
@@ -99,7 +99,7 @@ export default class EmployeesServiceRest implements EmployeesService {
             const response = await fetchRequest(this.getUrlWithId(id), {
                 method: 'DELETE',
             });
-            return await response.json();
+           
     }
     getEmployees(): Observable<Employee[] | string> {
         let intervalId: any;
@@ -118,7 +118,7 @@ export default class EmployeesServiceRest implements EmployeesService {
        
             const response = await fetchRequest(this.url, {
                 method: 'POST',
-               }, {...empl, userId: "admin"} as any)
+               }, empl)
            ;
            return response.json();
 
