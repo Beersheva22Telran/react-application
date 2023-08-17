@@ -2,7 +2,7 @@ import { Observable, Subscriber } from "rxjs";
 import Employee from "../model/Employee";
 import { AUTH_DATA_JWT } from "./AuthServiceJwt";
 import EmployeesService from "./EmployeesService";
-const POLLER_INTERVAL = 3000;
+const POLLER_INTERVAL = 30000
 class Cache {
     cacheString: string = '';
     set(employees: Employee[]): void {
@@ -73,11 +73,12 @@ async function fetchAllEmployees(url: string):Promise< Employee[]|string> {
 export default class EmployeesServiceRest implements EmployeesService {
     private observable: Observable<Employee[] | string> | null = null;
     private cache: Cache = new Cache();
+    private subscriber: Subscriber<string|Employee[]> | undefined;
     constructor(private url: string) { }
     async updateEmployee(empl: Employee): Promise<Employee> {
         const response = await fetchRequest(this.getUrlWithId(empl.id!),
             { method: 'PUT' }, empl);
-
+            this.sibscriberNext(this.url, this.subscriber!);
         return await response.json();
 
     }
@@ -99,6 +100,7 @@ export default class EmployeesServiceRest implements EmployeesService {
             const response = await fetchRequest(this.getUrlWithId(id), {
                 method: 'DELETE',
             });
+            this.sibscriberNext(this.url, this.subscriber!);
            
     }
     getEmployees(): Observable<Employee[] | string> {
@@ -106,7 +108,9 @@ export default class EmployeesServiceRest implements EmployeesService {
         if (!this.observable) {
             this.observable = new Observable<Employee[] | string>(subscriber => {
                 this.cache.reset();
+
                 this.sibscriberNext(this.url, subscriber);
+                this.subscriber = subscriber;
                 intervalId = setInterval(() => this.sibscriberNext(this.url, subscriber), POLLER_INTERVAL);
                 return () => clearInterval(intervalId)
             })
