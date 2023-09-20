@@ -98,7 +98,8 @@ export default class EmployeesServiceRest implements EmployeesService {
        this.webSocket?.close();
     }
     private connectWS() {
-       this.webSocket = new WebSocket(this.urlWebsocket); 
+       this.webSocket = new WebSocket(this.urlWebsocket, localStorage.getItem(AUTH_DATA_JWT) || ''); 
+       
         this.webSocket.onmessage = message => {
             console.log(message.data);
             this.sibscriberNext()
